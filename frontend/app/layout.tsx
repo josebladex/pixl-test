@@ -1,27 +1,33 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";
-
+import { NavUser } from "@/components/nav-user";
+import { Toaster } from 'sonner';
+import { AuthProvider } from "@/providers/auth-provider";
+import { getCurrentUser } from "./login/user-server";
 
 export const metadata: Metadata = {
   title: "Event App",
   description: "Pixl Test",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const user = await getCurrentUser();
+
   return (
     <html lang="es">
       <body>
-        <header className="bg-gray-800 text-white p-4">
-          <h1>Mi Aplicación</h1>
-        </header>
-        <main>{children}</main>
-        <footer className="bg-gray-800 text-white p-4 text-center">
-          Pie de página
-        </footer>
+        <AuthProvider initialUser={user}>
+          <header className="p-4 absolute top-0 right-0 z-50 h-12">
+                <NavUser />
+          </header>
+          <Toaster richColors position="top-center"/>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

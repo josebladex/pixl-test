@@ -2,18 +2,20 @@ FROM node:23-alpine AS app
 
 WORKDIR /app
 
-# Copia solo los archivos necesarios para instalar dependencias primero
+# Copiar primero los archivos de Prisma
+COPY prisma ./prisma
+
+# Copiar package.json y package-lock.json
 COPY package*.json ./
 
-# Instalación limpia
-RUN npm install
+# Instalar dependencias
+RUN npm install --unsafe-perm
 
-# Luego copia el resto del código (evita copiar node_modules si existe en tu máquina)
+# Copiar el resto de los archivos
 COPY . .
 
-# Construye la app (si aplica)
-RUN npm run build
+# Verificar que schema.prisma esté presente (opcional, para depuración)
+RUN ls -l /app/prisma/
 
-EXPOSE 3000
-
-CMD ["npm", "start"]
+# Comando para iniciar la aplicación
+CMD ["sh", "-c", "npx prisma migrate dev --name dev_init && npx prisma generate && npx prisma db seed && npm run dev"]
