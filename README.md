@@ -8,9 +8,7 @@ A modern web application for managing events, handling user authentication with 
 - Node.js 20.x
 - PostgreSQL 13
 
-Aquí está la adición que debes incluir en tu README.md bajo una sección **Important Note**:
 
-```markdown
 ## Important Note: User Management
 
 This implementation intentionally omits a user registration system as it was not required in the project specifications. To manage user accounts:
@@ -21,17 +19,19 @@ This implementation intentionally omits a user registration system as it was not
    const users = [
      {
        email: 'admin1@example.com',
-       password: 'adminPassword1', // Automatically hashed
        role: 'ADMIN',
      },
      {
        email: 'user1@example.com', 
-       password: 'userPassword1', // Automatically hashed
        role: 'USER',
      },
      // Add/modify users here
    ]
+
+   const password = 'password123'; // same password for all users in this seed
+
    ```
+   
 
 2. **To add new users**:
    ```bash
@@ -45,16 +45,6 @@ This implementation intentionally omits a user registration system as it was not
 - Passwords are hashed using bcryptjs (10 rounds)
 - Direct database modifications are discouraged as manual password hashing would be required
 - Use only test credentials in development environment
-```
-
-Esta sección cumple con:
-1. Explicar claramente la limitación deliberada del sistema
-2. Proporcionar instrucciones específicas para modificar usuarios
-3. Alertar sobre los riesgos de manipulación directa de la DB
-4. Mantener transparencia sobre las decisiones técnicas
-5. Ofrecer guía práctica para evaluación del proyecto
-
-¿Quieres que ajuste el formato o agregue más detalles técnicos específicos?
 
 ## Key Features
 - **Event Management**: CRUD operations for events with rich UI
