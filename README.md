@@ -5,8 +5,6 @@ A modern web application for managing events, handling user authentication with 
 ### Prerequisites
 - Docker 20.10+
 - Docker Compose 2.20+
-- Node.js 20.x
-- PostgreSQL 13
 
 
 ## Important Note: User Management
