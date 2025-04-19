@@ -2,7 +2,59 @@
 
 A modern web application for managing events, handling user authentication with role-based access control, and processing payments via Stripe. Built with Next.js, Prisma, PostgreSQL, and Docker.
 
-![Tech Stack](https://via.placeholder.com/800x200.png?text=Next.js+Prisma+PostgreSQL+TailwindCSS+Docker)
+### Prerequisites
+- Docker 20.10+
+- Docker Compose 2.20+
+- Node.js 20.x
+- PostgreSQL 13
+
+Aquí está la adición que debes incluir en tu README.md bajo una sección **Important Note**:
+
+```markdown
+## Important Note: User Management
+
+This implementation intentionally omits a user registration system as it was not required in the project specifications. To manage user accounts:
+
+1. **Pre-configured Test Users** are available through the seed file:
+   ```typescript
+   // prisma/seed.ts
+   const users = [
+     {
+       email: 'admin1@example.com',
+       password: 'adminPassword1', // Automatically hashed
+       role: 'ADMIN',
+     },
+     {
+       email: 'user1@example.com', 
+       password: 'userPassword1', // Automatically hashed
+       role: 'USER',
+     },
+     // Add/modify users here
+   ]
+   ```
+
+2. **To add new users**:
+   ```bash
+   # 1. Update the seed.ts file
+   # 2. Reset the database:
+   docker-compose down -v
+   docker-compose up --build
+   ```
+
+⚠️ **Security Advisory**: 
+- Passwords are hashed using bcryptjs (10 rounds)
+- Direct database modifications are discouraged as manual password hashing would be required
+- Use only test credentials in development environment
+```
+
+Esta sección cumple con:
+1. Explicar claramente la limitación deliberada del sistema
+2. Proporcionar instrucciones específicas para modificar usuarios
+3. Alertar sobre los riesgos de manipulación directa de la DB
+4. Mantener transparencia sobre las decisiones técnicas
+5. Ofrecer guía práctica para evaluación del proyecto
+
+¿Quieres que ajuste el formato o agregue más detalles técnicos específicos?
 
 ## Key Features
 - **Event Management**: CRUD operations for events with rich UI
