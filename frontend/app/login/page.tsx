@@ -1,6 +1,5 @@
-// app/login/page.tsx
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { LoginForm } from "./login-form";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { LoginForm } from './login-form';
 
 export default function Login() {
   return (
@@ -10,9 +9,7 @@ export default function Login() {
           <Card>
             <CardHeader>
               <CardTitle>Log in</CardTitle>
-              <CardDescription>
-                Enter your credentials to access your account
-              </CardDescription>
+              <CardDescription>Enter your credentials to access your account</CardDescription>
             </CardHeader>
             <CardContent>
               <LoginForm />

@@ -1,13 +1,13 @@
-"use client"
+'use client';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
+import { useAuth } from '@/providers/auth-provider';
 
 export default function Home() {
+  const { user } = useAuth();
 
   return (
     <div className="bg-white">
-
-
       <div className="relative isolate px-6 pt-14 lg:px-8">
         <div
           aria-hidden="true"
@@ -36,27 +36,25 @@ export default function Home() {
               Event Management with Auth & Payments
             </h1>
             <p className="mt-8 text-lg font-medium text-pretty text-gray-500 sm:text-xl/8">
-              A modern web platform to manage events, authenticate users by roles, and enable payments via Mercado Pago. Built with Next.js, Prisma, and TailwindCSS.
+              A modern web platform to manage events, authenticate users by roles, and enable
+              payments via Mercado Pago. Built with Next.js, Prisma PostgreSQL, TailwindCSS and
+              Containerized with Docker.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
-              <Button
-                variant="default"
-      
-                onClick={() => window.location.href = "/events"}
-              >
+              <Button variant="default" onClick={() => (window.location.href = '/events')}>
                 Explore Events
               </Button>
-              <Button
-                variant="outline"
-                className="border-indigo-700 cursor-pointer text-indigo-500 hover:bg-indigo-900 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-700"
-                onClick={() => window.location.href = "/login"}
-              >
-                Login
-              </Button>
-
+              {!user && (
+                <Button
+                  variant="outline"
+                  className="border-indigo-700 cursor-pointer text-indigo-500 hover:bg-indigo-900 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-700"
+                  onClick={() => (window.location.href = '/login')}
+                >
+                  Login
+                </Button>
+              )}
             </div>
           </div>
-
         </div>
         <div
           aria-hidden="true"
@@ -69,7 +67,6 @@ export default function Home() {
             }}
             className="relative left-[calc(50%+3rem)] aspect-1155/678 w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#7f1d1d] to-[#b91c1c] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]"
           />
-
         </div>
       </div>
     </div>

@@ -1,8 +1,8 @@
 'use client';
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -10,23 +10,24 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useTransition } from "react";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
-import { eventFormSchema, EventFormValues } from "./schema";
-import { updateEventAction } from "@/app/actions/events";
-import { Textarea } from "@/components/ui/textarea";
-import format from "date-fns/format";
-import Image from "next/image";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { useTransition } from 'react';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
+import { useRef, useState } from 'react';
+import { eventFormSchema, EventFormValues } from './schema';
+import { updateEventAction } from '@/app/actions/events';
+import { Textarea } from '@/components/ui/textarea';
+import format from 'date-fns/format';
+import Image from 'next/image';
+import { SerializedEvent } from '@/app/actions/prisma';
 
 export function EditEventForm({
   row,
   close,
 }: {
-  row: { original: EventFormValues & { id: number; image?:string } };
+  row: { original: SerializedEvent };
   close: (open: boolean) => void;
 }) {
   const router = useRouter();
@@ -39,7 +40,7 @@ export function EditEventForm({
       description: row.original.description,
       date: new Date(row.original.date),
       price: row.original.price,
-      image: "",
+      image: '',
     },
   });
 
@@ -47,42 +48,41 @@ export function EditEventForm({
 
   async function onSubmit(values: EventFormValues) {
     const formData = new FormData();
-    formData.append("title", values.title);
-    formData.append("description", values.description);
-    formData.append("date", values.date.toISOString());
-    formData.append("price", values.price.toString());
+    formData.append('title', values.title);
+    formData.append('description', values.description);
+    formData.append('date', values.date.toISOString());
+    formData.append('price', values.price.toString());
 
     const imageFile = fileInputRef.current?.files?.[0];
     if (imageFile) {
-      formData.append("image", imageFile);
+      formData.append('image', imageFile);
     }
 
     startTransition(async () => {
       try {
         const updatedEvent = await updateEventAction(row.original.id, {
-          title: formData.get("title") as string,
-          description: formData.get("description") as string,
-          date: formData.get("date") as string,
-          price: parseFloat(formData.get("price") as string),
-          image: (formData.get("image") as string | null) ?? undefined,
+          title: formData.get('title') as string,
+          description: formData.get('description') as string,
+          date: formData.get('date') as string,
+          price: parseFloat(formData.get('price') as string),
+          image: (formData.get('image') as string | null) ?? undefined,
         });
 
-        toast.success("Event updated successfully", {
+        toast.success('Event updated successfully', {
           action: {
-            label: "View",
+            label: 'View',
             onClick: () => router.push(`/events/${updatedEvent.id}`),
           },
         });
 
         form.reset();
-        if (fileInputRef.current) fileInputRef.current.value = "";
+        if (fileInputRef.current) fileInputRef.current.value = '';
         router.refresh();
 
-        // Close the form
         close(false);
       } catch (error) {
-        toast.error("Error updating the event", {
-          description: error instanceof Error ? error.message : "Please try again",
+        toast.error('Error updating the event', {
+          description: error instanceof Error ? error.message : 'Please try again',
         });
       }
     });
@@ -100,11 +100,7 @@ export function EditEventForm({
                 Event Title <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
-                <Input
-                  placeholder="E.g., Tech Conference"
-                  {...field}
-                  disabled={isPending}
-                />
+                <Input placeholder="E.g., Tech Conference" {...field} disabled={isPending} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -147,7 +143,7 @@ export function EditEventForm({
                   value={
                     field.value instanceof Date && !isNaN(field.value.getTime())
                       ? format(field.value, "yyyy-MM-dd'T'HH:mm")
-                      : ""
+                      : ''
                   }
                   onChange={(e) => field.onChange(new Date(e.target.value))}
                   disabled={isPending}
@@ -221,12 +217,8 @@ export function EditEventForm({
           )}
         />
 
-        <Button
-          type="submit"
-          className="w-full"
-          disabled={isPending}
-        >
-          {isPending ? "Updating event..." : "Save Changes"}
+        <Button type="submit" className="w-full" disabled={isPending}>
+          {isPending ? 'Updating event...' : 'Save Changes'}
         </Button>
       </form>
     </Form>

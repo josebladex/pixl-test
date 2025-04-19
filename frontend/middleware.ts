@@ -27,21 +27,11 @@ export async function middleware(request: NextRequest) {
   let user = null;
   if (token) {
     user = await getUserFromToken(token);
-    console.log('👤 Decoded user:', user);
-  }
-
-  if (pathname === '/login' && user) {
-    const target = user.role === 'ADMIN' ? '/admin' : '/events';
-    return NextResponse.redirect(new URL(target, request.url));
   }
 
   if (pathname.startsWith('/admin') || pathname.startsWith('/events')) {
     if (!user) {
       return NextResponse.redirect(new URL('/login', request.url));
-    }
-
-    if (pathname.startsWith('/admin') && user.role !== 'ADMIN') {
-      return NextResponse.redirect(new URL('/unauthorized', request.url));
     }
   }
 
@@ -49,5 +39,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/events/:path*', '/login'],
+  matcher: ['/admin/:path*', '/events/:path*'],
 };

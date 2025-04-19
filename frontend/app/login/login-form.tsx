@@ -1,10 +1,9 @@
-// app/login/components/login-form.tsx
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -12,13 +11,13 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { LoginFormValues, loginSchema } from "./schema";
-import { toast } from "sonner";
-import { useAuth } from "@/providers/auth-provider";
-import { getCurrentUser } from "./user-server";
-import { useRouter } from "next/navigation";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { LoginFormValues, loginSchema } from './schema';
+import { toast } from 'sonner';
+import { useAuth } from '@/providers/auth-provider';
+import { getCurrentUser } from './user-server';
+import { useRouter } from 'next/navigation';
 
 export function LoginForm() {
   const { setUser } = useAuth();
@@ -29,17 +28,15 @@ export function LoginForm() {
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
   });
 
-  // Mark that the component is mounted on the client
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // While not mounted, render nothing (or a spinner, if preferred)
   if (!mounted) {
     return null;
   }
@@ -54,31 +51,28 @@ export function LoginForm() {
           'Content-Type': 'application/json',
         },
       });
-      
+
       const data = await result.json();
-
-      console.log(data)
-
+      
       if (data.message === 'Login successfully') {
-        toast.success("Welcome!", {
-          description: "You have successfully logged in",
+        toast.success('Welcome!', {
+          description: 'You have successfully logged in',
         });
         const user = await getCurrentUser();
         setUser(user);
-
-        if (user && user.role === "ADMIN") {
-          router.push("/admin");
-        } else if (user && user.role === "USER") {
-          router.push("/events");
+        if (user && user.role === 'ADMIN') {
+          router.push(`/admin/${user.id}`);
+        } else if (user && user.role === 'USER') {
+          router.push('/events');
         }
       } else {
-        toast.error("Authentication error", {
+        toast.error('Authentication error', {
           description: data.message,
         });
       }
     } catch {
-      toast.error("Unexpected error", {
-        description: "Please try again later",
+      toast.error('Unexpected error', {
+        description: 'Please try again later',
       });
     } finally {
       setIsSubmitting(false);
@@ -106,7 +100,7 @@ export function LoginForm() {
             </FormItem>
           )}
         />
-        
+
         <FormField
           control={form.control}
           name="password"
@@ -126,13 +120,9 @@ export function LoginForm() {
             </FormItem>
           )}
         />
-        
-        <Button 
-          type="submit" 
-          className="w-full" 
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? "Processing..." : "Log in"}
+
+        <Button type="submit" className="w-full" disabled={isSubmitting}>
+          {isSubmitting ? 'Processing...' : 'Log in'}
         </Button>
       </form>
     </Form>

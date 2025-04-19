@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "prisma": "prisma",
-    "migrate": "prisma migrate dev"
+    "migrate": "prisma migrate dev",
+    "format": "prettier --write ."
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -68,6 +69,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.3.0",
+    "prettier": "^3.5.3",
     "prisma": "^6.6.0",
     "tailwindcss": "^4",
     "tsx": "^4.19.3",

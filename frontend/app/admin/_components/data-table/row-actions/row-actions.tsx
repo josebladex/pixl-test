@@ -10,7 +10,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Row } from '@tanstack/react-table';
-import { Event } from '@/app/actions/types';
 import { DeleteIcon, SquareMenu, SquarePen } from 'lucide-react';
 import {
   Dialog,
@@ -23,11 +22,11 @@ import {
 import IconMenu from '@/components/icon-menu';
 import DeleteEvent from './forms/delete-event';
 import { EditEventForm } from './forms/edit-event';
+import { SerializedEvent } from '@/app/actions/prisma';
 
 interface DataTableRowActionsProps {
-  row: Row<Event>; // Ensure this matches the imported Event type
+  row: Row<SerializedEvent>;
 }
-
 
 export function DataTableRowActions({ row }: DataTableRowActionsProps) {
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -37,7 +36,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
   return (
     <>
       <Dialog open={isEditOpen} onOpenChange={() => setIsEditOpen(!isEditOpen)}>
-        <DialogContent className="sm:max-w-[425px] h-screen py-6">
+        <DialogContent className="sm:max-w-[425px] max-h-[900px] py-6">
           <DialogHeader>
             <DialogTitle>Edit Event</DialogTitle>
             <DialogDescription>
@@ -47,16 +46,12 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
           <EditEventForm row={row} close={(open) => setIsEditOpen(open)} />
         </DialogContent>
       </Dialog>
-      <Dialog
-        open={isDeleteOpen}
-        onOpenChange={() => setIsDeleteOpen(!isDeleteOpen)}
-      >
+      <Dialog open={isDeleteOpen} onOpenChange={() => setIsDeleteOpen(!isDeleteOpen)}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Delete Event</DialogTitle>
             <DialogDescription>
-              This action is irreversible. Are you sure you want to delete the
-              selected event?
+              This action is irreversible. Are you sure you want to delete the selected event?
             </DialogDescription>
           </DialogHeader>
           <DeleteEvent row={row} setIsOpen={setIsDeleteOpen} />
@@ -78,14 +73,8 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
               setIsDropdownOpen(false);
             }}
           >
-            <div
-
-              className="w-full justify-start flex rounded-md p-2 transition-all duration-75 hover:bg-neutral-100"
-            >
-              <IconMenu
-                text="Edit Event"
-                icon={<SquarePen className="h-4 w-4" />}
-              />
+            <div className="w-full justify-start flex rounded-md p-2 transition-all duration-75 hover:bg-neutral-100">
+              <IconMenu text="Edit Event" icon={<SquarePen className="h-4 w-4" />} />
             </div>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
@@ -97,13 +86,8 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
               setIsDropdownOpen(false);
             }}
           >
-            <div
-
-            >
-              <IconMenu
-                text="Delete Event"
-                icon={<DeleteIcon className="h-4 w-4" />}
-              />
+            <div>
+              <IconMenu text="Delete Event" icon={<DeleteIcon className="h-4 w-4" />} />
             </div>
           </DropdownMenuItem>
         </DropdownMenuContent>

@@ -1,8 +1,8 @@
 'use client';
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -10,18 +10,18 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useTransition } from "react";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/providers/auth-provider";
-import { format } from "date-fns";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { useTransition } from 'react';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/providers/auth-provider';
+import { format } from 'date-fns';
 import { useRef } from 'react';
-import { Label } from "@/components/ui/label";
+import { Label } from '@/components/ui/label';
 import { eventFormSchema, EventFormValues } from '../schema';
-import { createEventAction } from "@/app/actions/events";
-import { Textarea } from "@/components/ui/textarea";
+import { createEventAction } from '@/app/actions/events';
+import { Textarea } from '@/components/ui/textarea';
 
 export function CreateEventForm({ close }: { close: (open: boolean) => void }) {
   const router = useRouter();
@@ -31,11 +31,11 @@ export function CreateEventForm({ close }: { close: (open: boolean) => void }) {
   const form = useForm<EventFormValues>({
     resolver: zodResolver(eventFormSchema),
     defaultValues: {
-      title: "",
-      description: "",
+      title: '',
+      description: '',
       date: new Date(),
       price: 0,
-      image: "",
+      image: '',
     },
   });
 
@@ -43,7 +43,7 @@ export function CreateEventForm({ close }: { close: (open: boolean) => void }) {
 
   async function onSubmit(values: EventFormValues) {
     if (!user || user.role !== 'ADMIN') {
-      toast.error("Not authorized");
+      toast.error('Not authorized');
       return;
     }
 
@@ -53,7 +53,7 @@ export function CreateEventForm({ close }: { close: (open: boolean) => void }) {
     formData.append('date', values.date.toISOString());
     formData.append('price', values.price.toString());
     formData.append('createdById', user.id.toString());
-    
+
     const imageFile = fileInputRef.current?.files?.[0];
     if (imageFile) {
       formData.append('image', imageFile);
@@ -62,23 +62,22 @@ export function CreateEventForm({ close }: { close: (open: boolean) => void }) {
     startTransition(async () => {
       try {
         const newEvent = await createEventAction(formData);
-        
-        toast.success("Event created successfully", {
+
+        toast.success('Event created successfully', {
           action: {
-            label: "View",
+            label: 'View',
             onClick: () => router.push(`/events/${newEvent.id}`),
           },
         });
-        
+
         form.reset();
         if (fileInputRef.current) fileInputRef.current.value = '';
         router.refresh();
 
-        // Close the form
         close(false);
       } catch (error) {
-        toast.error("Error creating the event", {
-          description: error instanceof Error ? error.message : "Please try again",
+        toast.error('Error creating the event', {
+          description: error instanceof Error ? error.message : 'Please try again',
         });
       }
     });
@@ -96,11 +95,7 @@ export function CreateEventForm({ close }: { close: (open: boolean) => void }) {
                 Event Title <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
-                <Input 
-                  placeholder="E.g., Tech Conference" 
-                  {...field} 
-                  disabled={isPending}
-                />
+                <Input placeholder="E.g., Tech Conference" {...field} disabled={isPending} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -143,7 +138,7 @@ export function CreateEventForm({ close }: { close: (open: boolean) => void }) {
                   value={
                     field.value instanceof Date && !isNaN(field.value.getTime())
                       ? format(field.value, "yyyy-MM-dd'T'HH:mm")
-                      : ""
+                      : ''
                   }
                   onChange={(e) => field.onChange(new Date(e.target.value))}
                   disabled={isPending}
@@ -181,9 +176,9 @@ export function CreateEventForm({ close }: { close: (open: boolean) => void }) {
           <Label htmlFor="image">
             Event Image <span className="text-muted-foreground">(Optional)</span>
           </Label>
-          <Input 
+          <Input
             id="image"
-            type="file" 
+            type="file"
             ref={fileInputRef}
             accept="image/png, image/jpeg, image/webp"
             disabled={isPending}
@@ -193,12 +188,8 @@ export function CreateEventForm({ close }: { close: (open: boolean) => void }) {
           </p>
         </div>
 
-        <Button 
-          type="submit" 
-          className="w-full" 
-          disabled={isPending || !(user?.role === 'ADMIN')}
-        >
-          {isPending ? "Creating event..." : "Create Event"}
+        <Button type="submit" className="w-full" disabled={isPending || !(user?.role === 'ADMIN')}>
+          {isPending ? 'Creating event...' : 'Create Event'}
         </Button>
       </form>
     </Form>

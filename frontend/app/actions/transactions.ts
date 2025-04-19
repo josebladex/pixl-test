@@ -1,4 +1,3 @@
-// app/actions/paymentActions.ts
 'use server';
 
 import prisma from '@/lib/prisma';
@@ -6,28 +5,20 @@ import prisma from '@/lib/prisma';
 interface MercadoPagoPreference {
   id: string;
   init_point: string;
-  // Puedes incluir otros atributos de la respuesta de Mercado Pago si lo requieres
 }
 
-// Acción para crear una preferencia de pago en Mercado Pago y registrar la transacción
-export async function createPaymentPreferenceAction(data: {
-  userId: number;
-  eventId: number;
-}) {
-  // 1. Obtener la información del evento
+export async function createPaymentPreferenceAction(data: { userId: number; eventId: number }) {
   const event = await prisma.event.findUnique({ where: { id: data.eventId } });
   if (!event) {
     throw new Error('Evento no encontrado');
   }
-
-  // 2. Construir los datos de preferencia para Mercado Pago
   const preferencePayload = {
     items: [
       {
         title: event.title,
         description: event.description,
         quantity: 1,
-        currency_id: 'ARS', // Ajusta la moneda según corresponda
+        currency_id: 'USD',
         unit_price: parseFloat(event.price.toString()),
       },
     ],
@@ -39,7 +30,6 @@ export async function createPaymentPreferenceAction(data: {
     auto_return: 'approved',
   };
 
-  // 3. Llamar a la API de Mercado Pago para crear la preferencia
   const response = await fetch('https://api.mercadopago.com/checkout/preferences', {
     method: 'POST',
     headers: {
@@ -56,13 +46,11 @@ export async function createPaymentPreferenceAction(data: {
 
   const preference: MercadoPagoPreference = await response.json();
 
-  // 4. Registrar la transacción con estado PENDING
   const transaction = await prisma.transaction.create({
     data: {
       user: { connect: { id: data.userId } },
       event: { connect: { id: data.eventId } },
       paymentId: preference.id,
-      // status se deja PENDING por defecto (según el modelo)
     },
   });
 
@@ -73,7 +61,6 @@ export async function createPaymentPreferenceAction(data: {
   };
 }
 
-// Acción para actualizar el estado de la transacción (por ejemplo, mediante webhook)
 export async function updateTransactionStatusAction(
   paymentId: string,
   newStatus: 'APPROVED' | 'REJECTED'

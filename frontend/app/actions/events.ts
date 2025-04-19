@@ -5,8 +5,8 @@ import fs from 'fs/promises';
 import path from 'path';
 import { revalidatePath } from 'next/cache';
 import { eventFormSchema } from '../admin/_components/data-table/row-actions/forms/schema';
+import { SerializedEvent } from './prisma';
 
-// Action to create an event
 export async function createEventAction(formData: FormData) {
   try {
     const rawData = {
@@ -55,7 +55,7 @@ export async function createEventAction(formData: FormData) {
       price: newEvent.price.toNumber(),
     };
 
-    revalidatePath('/admin'); // Revalidate the /admin page
+    revalidatePath('/admin');
     return serializedEvent;
   } catch (error) {
     console.error('Error creating event:', error);
@@ -63,14 +63,16 @@ export async function createEventAction(formData: FormData) {
   }
 }
 
-// Action to update an event by ID
-export async function updateEventAction(eventId: number, data: {
-  title?: string;
-  description?: string;
-  date?: string;
-  price?: number;
-  image?: string;
-}) {
+export async function updateEventAction(
+  eventId: number,
+  data: {
+    title?: string;
+    description?: string;
+    date?: string;
+    price?: number;
+    image?: string;
+  }
+) {
   try {
     const updatedEvent = await prisma.event.update({
       where: { id: eventId },
@@ -88,7 +90,7 @@ export async function updateEventAction(eventId: number, data: {
       price: updatedEvent.price.toNumber(),
     };
 
-    revalidatePath('/admin'); // Revalidate the /admin page
+    revalidatePath('/admin');
     return serializedEvent;
   } catch (error) {
     console.error('Error updating event:', error);
@@ -96,29 +98,44 @@ export async function updateEventAction(eventId: number, data: {
   }
 }
 
-// Action to delete an event by ID
 export async function deleteEventAction(eventId: number) {
   try {
     const deletedEvent = await prisma.event.delete({
       where: { id: eventId },
     });
 
-    revalidatePath('/admin'); // Revalidate the /admin page
-    return deletedEvent;
+    const serializedEvent = {
+      ...deletedEvent,
+      price: deletedEvent.price.toNumber(), 
+    };
+
+    revalidatePath('/admin');
+    return serializedEvent;
   } catch (error) {
     console.error('Error deleting event:', error);
     throw new Error(error instanceof Error ? error.message : 'Error deleting the event');
   }
 }
 
-// Action to read all events
-export async function readAllEvents() {
+export async function readAllEvents(): Promise<SerializedEvent[]> {
   try {
     const events = await prisma.event.findMany({
       orderBy: { date: 'asc' },
+      include: {
+        createdBy: {
+          select: {
+            email: true,
+          },
+        },
+        transactions: {
+          select: {
+            userId: true,
+          },
+        },
+      },
     });
 
-    const serializedEvents = events.map(event => ({
+    const serializedEvents = events.map((event) => ({
       ...event,
       price: event.price.toNumber(),
     }));
@@ -130,25 +147,30 @@ export async function readAllEvents() {
   }
 }
 
-// Action to read an event by ID
-export async function readEventById(eventId: number) {
+export async function readEventsByUserId(userId: number | string): Promise<SerializedEvent[]> {
   try {
-    const event = await prisma.event.findUnique({
-      where: { id: eventId },
+    const numericUserId = typeof userId === 'string' ? parseInt(userId, 10) : userId;
+
+    const events = await prisma.event.findMany({
+      where: { createdById: numericUserId },
+      orderBy: { date: 'asc' },
+      include: {
+        createdBy: {
+          select: {
+            email: true,
+          },
+        },
+      },
     });
 
-    if (!event) {
-      throw new Error('Event not found');
-    }
-
-    const serializedEvent = {
+    const serializedEvents = events.map((event) => ({
       ...event,
       price: event.price.toNumber(),
-    };
+    }));
 
-    return serializedEvent;
+    return serializedEvents;
   } catch (error) {
-    console.error('Error reading event by ID:', error);
-    throw new Error(error instanceof Error ? error.message : 'Error fetching the event');
+    console.error('Error reading events by user ID:', error);
+    throw new Error(error instanceof Error ? error.message : 'Error fetching the events');
   }
 }

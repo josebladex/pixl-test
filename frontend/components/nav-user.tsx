@@ -1,11 +1,16 @@
-"use client";
-import { useAuth } from "@/providers/auth-provider";
-import { useRouter } from "next/navigation";
-import { ChevronsUpDown, LogOut } from "lucide-react";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { toast } from "sonner";
-import { Button } from "./ui/button";
+'use client';
+import { useAuth } from '@/providers/auth-provider';
+import { useRouter } from 'next/navigation';
+import { ChevronsUpDown, LogOut, Calendar, Compass } from 'lucide-react';
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { toast } from 'sonner';
+import { Button } from './ui/button';
 
 export function NavUser() {
   const router = useRouter();
@@ -18,17 +23,27 @@ export function NavUser() {
       });
 
       if (response.ok) {
-        toast.success("Logged out successfully");
+        toast.success('Logged out successfully');
         setUser(null);
       } else {
-        toast.error("Error logging out");
+        toast.error('Error logging out');
       }
     } catch (error) {
-      toast.error("Error logging out");
-      console.error("Logout error:", error);
+      toast.error('Error logging out');
+      console.error('Logout error:', error);
     } finally {
       router.push('/');
     }
+  };
+
+  const handleEventManager = () => {
+    if (user?.id) {
+      router.push(`/admin/${user.id}`);
+    }
+  };
+
+  const handleEventExplorer = () => {
+    router.push('/events');
   };
 
   if (!user) return null;
@@ -49,12 +64,17 @@ export function NavUser() {
           </div>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent
-        className="min-w-56 rounded-lg"
-        side="bottom"
-        align="end"
-        sideOffset={4}
-      >
+      <DropdownMenuContent className="min-w-56 rounded-lg" side="bottom" align="end" sideOffset={4}>
+        {user.role === 'ADMIN' && (
+          <DropdownMenuItem onClick={handleEventManager} className="cursor-pointer">
+            <Calendar className="mr-2 h-4 w-4" />
+            <span>Event Manager</span>
+          </DropdownMenuItem>
+        )}
+        <DropdownMenuItem onClick={handleEventExplorer} className="cursor-pointer">
+          <Compass className="mr-2 h-4 w-4" />
+          <span>Event Explorer</span>
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log out</span>

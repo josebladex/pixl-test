@@ -4,14 +4,15 @@ import { NextRequest } from 'next/server';
 const SECRET_KEY = process.env.JWT_SECRET || 'your-secret-key';
 
 export function generateToken(user: { id: number; email: string; role: string }) {
-  return jwt.sign({ id: user.id, email: user.email, role: user.role }, SECRET_KEY, { expiresIn: '1h' });
+  return jwt.sign({ id: user.id, email: user.email, role: user.role }, SECRET_KEY, {
+    expiresIn: '1h',
+  });
 }
 
 export function verifyToken(token: string) {
   try {
     return jwt.verify(token, SECRET_KEY) as { id: number; email: string; role: string };
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -24,7 +25,12 @@ export function getUserFromRequest(request: NextRequest) {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET!);
 
-    if (typeof decoded === 'object' && decoded !== null && 'email' in decoded && 'role' in decoded) {
+    if (
+      typeof decoded === 'object' &&
+      decoded !== null &&
+      'email' in decoded &&
+      'role' in decoded
+    ) {
       return {
         email: decoded.email as string,
         role: decoded.role as string,
@@ -32,8 +38,7 @@ export function getUserFromRequest(request: NextRequest) {
     }
 
     return null;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (error) {
+  } catch {
     return null;
   }
 }

@@ -13,26 +13,21 @@ type AuthContextType = {
   setUser: (user: User) => void;
 };
 
-const AuthContext = createContext<AuthContextType>({ 
+const AuthContext = createContext<AuthContextType>({
   user: null,
-  setUser: () => {}
+  setUser: () => {},
 });
 
-export function AuthProvider({ 
+export function AuthProvider({
   children,
-  initialUser
-}: { 
+  initialUser,
+}: {
   children: React.ReactNode;
-  initialUser: User 
+  initialUser: User;
 }) {
   const [user, setUser] = useState<User>(initialUser);
 
-
-  return (
-    <AuthContext.Provider value={{ user, setUser }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={{ user, setUser }}>{children}</AuthContext.Provider>;
 }
 
 export const useAuth = () => useContext(AuthContext);

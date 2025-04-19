@@ -1,4 +1,3 @@
-// /app/api/auth/login/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { generateToken } from '@/lib/jwt';
@@ -23,7 +22,7 @@ export async function POST(req: NextRequest) {
     path: '/',
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
-    maxAge: 60 * 60 * 24, // 1 día
+    maxAge: 60 * 60 * 24,
   });
 
   return response;

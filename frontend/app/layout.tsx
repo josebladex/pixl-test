@@ -1,14 +1,13 @@
-// app/layout.tsx
-import type { Metadata } from "next";
-import "./globals.css";
-import { NavUser } from "@/components/nav-user";
+import type { Metadata } from 'next';
+import './globals.css';
+import { NavUser } from '@/components/nav-user';
 import { Toaster } from 'sonner';
-import { AuthProvider } from "@/providers/auth-provider";
-import { getCurrentUser } from "./login/user-server";
+import { AuthProvider } from '@/providers/auth-provider';
+import { getCurrentUser } from './login/user-server';
 
 export const metadata: Metadata = {
-  title: "Event App",
-  description: "Pixl Test",
+  title: 'Event App',
+  description: 'Pixl Test',
 };
 
 export default async function RootLayout({
@@ -20,12 +19,12 @@ export default async function RootLayout({
 
   return (
     <html lang="es">
-      <body>
+      <body suppressHydrationWarning>
         <AuthProvider initialUser={user}>
-          <header className="p-4 absolute top-0 right-0 z-50 h-12">
-                <NavUser />
+          <header className="p-4 fixed top-0 right-0 z-50 h-12">
+            <NavUser />
           </header>
-          <Toaster richColors position="top-center"/>
+          <Toaster richColors position="top-center" />
           {children}
         </AuthProvider>
       </body>

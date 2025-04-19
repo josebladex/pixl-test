@@ -1,6 +1,6 @@
-import {ReactNode} from 'react';
+import { ReactNode } from 'react';
 
-import {cn} from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
 interface MenuIconProps {
   icon: ReactNode;
@@ -8,13 +8,10 @@ interface MenuIconProps {
   className?: string;
 }
 
-export default function IconMenu({className, icon, text}: MenuIconProps) {
+export default function IconMenu({ className, icon, text }: MenuIconProps) {
   return (
     <div
-      className={cn(
-        'flex flex-row text-center items-center justify-center space-x-2',
-        className,
-      )}
+      className={cn('flex flex-row text-center items-center justify-center space-x-2', className)}
     >
       {icon}
       <span className="text-sm">{text}</span>
