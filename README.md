@@ -74,8 +74,11 @@ docker-compose up
 # Access application
 http://localhost:3000
 
-# Access database (from host)
-psql -h localhost -U user -d mydb
+# Access database (from docker)
+docker compose exec [db-container-id] sh
+
+# Access database (from Prisma Studio)
+docker compose exec app npx prisma studio
 ```
 
 ## Project Structure
