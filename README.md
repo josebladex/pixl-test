@@ -1,6 +1,6 @@
 # Pixl Technical Test - Event Management Platform
 
-A modern web application for managing events, handling user authentication with role-based access control, and processing payments via Stripe. Built with Next.js, Prisma, PostgreSQL, and Docker.
+A modern web application for managing events, handling user authentication with role-based access control, and processing payments via Mercado Pago. Built with Next.js, Prisma, PostgreSQL, and Docker.
 
 ### Prerequisites
 - Docker 20.10+
